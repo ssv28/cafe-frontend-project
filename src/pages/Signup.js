@@ -1,299 +1,261 @@
-// import React from 'react';
-// import { Formik, Form } from 'formik';
-// import { Container, TextField, Button, Typography, Box, Paper, CircularProgress, MenuItem } from '@mui/material';
-// import * as Yup from 'yup';
-// import axios from 'axios';
-// import { useNavigate } from 'react-router-dom';
-
-// // Validation schema using Yup
-// const SignupSchema = Yup.object().shape({
-//   name: Yup.string().required('Name is required'),
-//   email: Yup.string().email('Invalid email format').required('Email is required'),
-//   password: Yup.string().min(6, 'Password must be at least 6 characters').required('Password is required'),
-//   role: Yup.string().required('Role is required'),
-// });
-
-// function Signup() {
-//   const navigate = useNavigate();
-
-//   // Form submit handler
-//   const handleSubmit = async (values, { setSubmitting, setErrors }) => {
-//     try {
-//       await axios.post('http://localhost:3000/admin/signup', values);
-//       navigate('/admin/login');
-//     } catch (error) {
-//       setErrors({ apiError: 'Signup failed. Please try again.' });
-//     } finally {
-//       setSubmitting(false);
-//     }
-//   };
-
-//   return (
-//     <Container maxWidth="sm" style={{ marginTop: '100px' }}>
-//       <Paper elevation={8} style={{ padding: '40px', backgroundColor: '#fff1e1', borderRadius: '10px' }}>
-//         <Typography variant="h4" align="center" gutterBottom style={{ fontFamily: 'Pacifico', color: '#8e4b2f' }}>
-//           Café Sign-Up
-//         </Typography>
-//         <Typography variant="body1" align="center" style={{ marginBottom: '20px', color: '#6a3310' }}>
-//           Join our Café community and get started today!
-//         </Typography>
-
-//         <Formik
-//           initialValues={{ name: '', email: '', password: '', role: '' }}
-//           validationSchema={SignupSchema}
-//           onSubmit={handleSubmit}
-//         >
-//           {({ values, errors, touched, handleChange, handleBlur, isSubmitting }) => (
-//             <Form>
-//               <TextField
-//                 name="name"
-//                 label="Full Name"
-//                 fullWidth
-//                 margin="normal"
-//                 variant="outlined"
-//                 value={values.name}
-//                 onChange={handleChange}
-//                 onBlur={handleBlur}
-//                 error={touched.name && Boolean(errors.name)}
-//                 helperText={touched.name && errors.name}
-//                 InputLabelProps={{ style: { color: '#8e4b2f' } }}
-//                 style={{ marginBottom: '15px' }}
-//               />
-//               <TextField
-//                 name="email"
-//                 label="Email Address"
-//                 fullWidth
-//                 margin="normal"
-//                 variant="outlined"
-//                 value={values.email}
-//                 onChange={handleChange}
-//                 onBlur={handleBlur}
-//                 error={touched.email && Boolean(errors.email)}
-//                 helperText={touched.email && errors.email}
-//                 style={{ marginBottom: '15px' }}
-//               />
-//               <TextField
-//                 name="password"
-//                 label="Password"
-//                 fullWidth
-//                 margin="normal"
-//                 type="password"
-//                 variant="outlined"
-//                 value={values.password}
-//                 onChange={handleChange}
-//                 onBlur={handleBlur}
-//                 error={touched.password && Boolean(errors.password)}
-//                 helperText={touched.password && errors.password}
-//                 style={{ marginBottom: '15px' }}
-//               />
-//               <TextField
-//                 name="role"
-//                 label="Role"
-//                 fullWidth
-//                 margin="normal"
-//                 select
-//                 variant="outlined"
-//                 value={values.role}
-//                 onChange={handleChange}
-//                 onBlur={handleBlur}
-//                 error={touched.role && Boolean(errors.role)}
-//                 helperText={touched.role && errors.role}
-//                 style={{ marginBottom: '15px' }}
-//               >
-//                 <MenuItem value="" disabled>
-//                   Select Role
-//                 </MenuItem>
-//                 <MenuItem value="superadmin">Super Admin</MenuItem>
-//                 <MenuItem value="admin">Admin</MenuItem>
-//                 <MenuItem value="manager">Manager</MenuItem>
-//               </TextField>
-
-//               {errors.apiError && (
-//                 <Typography color="error" align="center" style={{ marginTop: '10px' }}>
-//                   {errors.apiError}
-//                 </Typography>
-//               )}
-
-//               <Box textAlign="center" marginTop={3}>
-//                 <Button
-//                   variant="contained"
-//                   color="primary"
-//                   type="submit"
-//                   disabled={isSubmitting}
-//                   style={{
-//                     backgroundColor: '#8e4b2f',
-//                     color: 'white',
-//                     padding: '10px 30px',
-//                     borderRadius: '20px',
-//                     textTransform: 'none',
-//                   }}
-//                 >
-//                   {isSubmitting ? <CircularProgress size={24} /> : 'Sign Up'}
-//                 </Button>
-//               </Box>
-//             </Form>
-//           )}
-//         </Formik>
-//       </Paper>
-//     </Container>
-//   );
-// }
-
-// export default Signup;
 import React, { useState } from 'react';
-import { Container, TextField, Button, Typography, Box, Paper, CircularProgress, MenuItem } from '@mui/material';
-import * as Yup from 'yup';
 import axios from 'axios';
+import { Formik, Field, Form, ErrorMessage } from 'formik';
+import {
+  Typography,
+  Box,
+  Button,
+  Paper,
+  Grid,
+  Avatar,
+  InputAdornment,
+  TextField,
+  IconButton,
+  CircularProgress,
+  MenuItem,
+} from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import * as Yup from 'yup';
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
+import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
 // Validation schema using Yup
-const SignupSchema = Yup.object().shape({
+const signupSchema = Yup.object().shape({
   name: Yup.string().required('Name is required'),
   email: Yup.string().email('Invalid email format').required('Email is required'),
-  password: Yup.string().min(6, 'Password must be at least 6 characters').required('Password is required'),
+  password: Yup.string().min(8, 'Password must be at least 8 characters').required('Password is required'),
   role: Yup.string().required('Role is required'),
 });
 
 function Signup() {
+  const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
-  // State for form fields and errors
-  const [formData, setFormData] = useState({ name: '', email: '', password: '', role: '' });
-  const [errors, setErrors] = useState({});
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [apiError, setApiError] = useState('');
-
-  // Handle form field change
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
-
-  // Handle form submission
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setApiError('');
-    setErrors({});
-
-    try {
-      // Validate form data with Yup
-      await SignupSchema.validate(formData, { abortEarly: false });
-      setIsSubmitting(true);
-
-      // Make API request
-      await axios.post('http://localhost:3000/admin/signup', formData);
-      navigate('/admin/login');
-    } catch (err) {
-      if (err.name === 'ValidationError') {
-        const validationErrors = {};
-        err.inner.forEach((error) => {
-          validationErrors[error.path] = error.message;
-        });
-        setErrors(validationErrors);
-      } else {
-        setApiError('Signup failed. Please try again.');
-      }
-    } finally {
-      setIsSubmitting(false);
-    }
+  const handleTogglePasswordVisibility = () => {
+    setShowPassword((prev) => !prev);
   };
 
   return (
-    <Container maxWidth="sm" style={{ marginTop: '100px' }}>
-      <Paper elevation={8} style={{ padding: '40px', backgroundColor: '#fff1e1', borderRadius: '10px' }}>
-        <Typography variant="h4" align="center" gutterBottom style={{ fontFamily: 'Pacifico', color: '#8e4b2f' }}>
-          Café Sign-Up
-        </Typography>
-        <Typography variant="body1" align="center" style={{ marginBottom: '20px', color: '#6a3310' }}>
-          Join our Café community and get started today!
-        </Typography>
+    <>
+      {loading && (
+        <Box
+          sx={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: '100%',
+            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            zIndex: 1000,
+          }}
+        >
+          <CircularProgress size={60} style={{ color: '#fff' }} />
+        </Box>
+      )}
 
-        <form onSubmit={handleSubmit}>
-          <TextField
-            name="name"
-            label="Full Name"
-            fullWidth
-            margin="normal"
-            variant="outlined"
-            value={formData.name}
-            onChange={handleChange}
-            error={!!errors.name}
-            helperText={errors.name}
-            InputLabelProps={{ style: { color: '#8e4b2f' } }}
-            style={{ marginBottom: '15px' }}
-          />
-          <TextField
-            name="email"
-            label="Email Address"
-            fullWidth
-            margin="normal"
-            variant="outlined"
-            value={formData.email}
-            onChange={handleChange}
-            error={!!errors.email}
-            helperText={errors.email}
-            style={{ marginBottom: '15px' }}
-          />
-          <TextField
-            name="password"
-            label="Password"
-            fullWidth
-            margin="normal"
-            type="password"
-            variant="outlined"
-            value={formData.password}
-            onChange={handleChange}
-            error={!!errors.password}
-            helperText={errors.password}
-            style={{ marginBottom: '15px' }}
-          />
-          <TextField
-            name="role"
-            label="Role"
-            fullWidth
-            margin="normal"
-            select
-            variant="outlined"
-            value={formData.role}
-            onChange={handleChange}
-            error={!!errors.role}
-            helperText={errors.role}
-            style={{ marginBottom: '15px' }}
-          >
-            <MenuItem value="" disabled>
-              Select Role
-            </MenuItem>
-            <MenuItem value="superadmin">Super Admin</MenuItem>
-            <MenuItem value="admin">Admin</MenuItem>
-            <MenuItem value="manager">Manager</MenuItem>
-          </TextField>
-
-          {apiError && (
-            <Typography color="error" align="center" style={{ marginTop: '10px' }}>
-              {apiError}
-            </Typography>
-          )}
-
-          <Box textAlign="center" marginTop={3}>
-            <Button
-              variant="contained"
-              color="primary"
-              type="submit"
-              disabled={isSubmitting}
-              style={{
-                backgroundColor: '#8e4b2f',
-                color: 'white',
-                padding: '10px 30px',
-                borderRadius: '20px',
-                textTransform: 'none',
+      <Grid
+        container
+        sx={{
+          minHeight: '100vh',
+          background: 'linear-gradient(135deg, #FFD194, #D1913C)',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+      >
+        <Grid item xs={12} sm={8} md={5} lg={4}>
+          <Paper elevation={10} sx={{ p: 4, borderRadius: 2 }}>
+            <Box textAlign="center" mb={3}>
+              <Avatar sx={{ m: 'auto', bgcolor: '#D1913C' }}>
+                <LockOutlinedIcon />
+              </Avatar>
+              <Typography
+                variant="h5"
+                style={{
+                  marginTop: '10px',
+                  color: '#5a342c',
+                  fontWeight: 'bold',
+                  fontFamily: 'Georgia, serif',
+                }}
+              >
+                Café Sign Up
+              </Typography>
+            </Box>
+            <Formik
+              initialValues={{
+                name: '',
+                email: '',
+                password: '',
+                role: '',
+              }}
+              validationSchema={signupSchema}
+              onSubmit={async (values, { resetForm }) => {
+                setLoading(true);
+                try {
+                  const res = await axios.post(
+                    'http://localhost:3000/admin/signup',
+                    values
+                  );
+                  console.log(res);
+                  localStorage.setItem('token', res.data.token);
+                  navigate('/admin/login');
+                } catch (err) {
+                  console.error('Sign Up failed:', err);
+                } finally {
+                  setLoading(false);
+                  resetForm();
+                }
               }}
             >
-              {isSubmitting ? <CircularProgress size={24} /> : 'Sign Up'}
-            </Button>
-          </Box>
-        </form>
-      </Paper>
-    </Container>
+              <Form>
+                <Box mb={2}>
+                  <Field
+                    as={TextField}
+                    label="Full Name"
+                    name="name"
+                    fullWidth
+                    margin="normal"
+                    variant="outlined"
+                    placeholder="Enter your name"
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <PersonOutlineIcon style={{ color: '#D1913C' }} />
+                        </InputAdornment>
+                      ),
+                    }}
+                    helperText={
+                      <ErrorMessage
+                        name="name"
+                        component="div"
+                        style={{ color: 'red', fontSize: '12px' }}
+                      />
+                    }
+                  />
+                </Box>
+                <Box mb={2}>
+                  <Field
+                    as={TextField}
+                    label="Email Address"
+                    name="email"
+                    fullWidth
+                    margin="normal"
+                    variant="outlined"
+                    placeholder="Enter your email"
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <EmailOutlinedIcon style={{ color: '#D1913C' }} />
+                        </InputAdornment>
+                      ),
+                    }}
+                    helperText={
+                      <ErrorMessage
+                        name="email"
+                        component="div"
+                        style={{ color: 'red', fontSize: '12px' }}
+                      />
+                    }
+                  />
+                </Box>
+                <Box mb={2}>
+                  <Field
+                    as={TextField}
+                    label="Password"
+                    name="password"
+                    type={showPassword ? 'text' : 'password'}
+                    fullWidth
+                    margin="normal"
+                    variant="outlined"
+                    placeholder="Enter your password"
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <LockOutlinedIcon style={{ color: '#D1913C' }} />
+                        </InputAdornment>
+                      ),
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <IconButton onClick={handleTogglePasswordVisibility} edge="end">
+                            {showPassword ? (
+                              <VisibilityOff style={{ color: '#D1913C' }} />
+                            ) : (
+                              <Visibility style={{ color: '#D1913C' }} />
+                            )}
+                          </IconButton>
+                        </InputAdornment>
+                      ),
+                    }}
+                    helperText={
+                      <ErrorMessage
+                        name="password"
+                        component="div"
+                        style={{ color: 'red', fontSize: '12px' }}
+                      />
+                    }
+                  />
+                </Box>
+                <Box mb={2}>
+                  <Field
+                    as={TextField}
+                    select
+                    label="Role"
+                    name="role"
+                    fullWidth
+                    margin="normal"
+                    variant="outlined"
+                    helperText={
+                      <ErrorMessage
+                        name="role"
+                        component="div"
+                        style={{ color: 'red', fontSize: '12px' }}
+                      />
+                    }
+                  >
+                    <MenuItem value="" disabled>
+                      Select Role
+                    </MenuItem>
+                    <MenuItem value="superadmin">Super Admin</MenuItem>
+                    <MenuItem value="admin">Admin</MenuItem>
+                    <MenuItem value="manager">Manager</MenuItem>
+                  </Field>
+                </Box>
+                <Box textAlign="center" mt={3}>
+                  <Button
+                    type="submit"
+                    variant="contained"
+                    disabled={loading}
+                    sx={{
+                      backgroundColor: loading ? '#aaa' : '#D1913C',
+                      color: '#fff',
+                      py: 1.5,
+                      px: 5,
+                    }}
+                  >
+                    {loading ? <CircularProgress size={24} color="inherit" /> : 'Sign Up'}
+                  </Button>
+                </Box>
+              </Form>
+            </Formik>
+            <Box mt={2} textAlign="center">
+              <Typography variant="body2" color="textSecondary">
+                Already have an account?{' '}
+                <Button color="primary" onClick={() => navigate('/admin/login')}>
+                  Login
+                </Button>
+              </Typography>
+            </Box>
+          </Paper>
+        </Grid>
+      </Grid>
+    </>
   );
 }
 
