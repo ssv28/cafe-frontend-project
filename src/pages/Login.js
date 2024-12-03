@@ -99,11 +99,11 @@ function Login() {
               onSubmit={async (values, { resetForm }) => {
                 setLoading(true);
                 try {
-                  const res = await axios.post('http://localhost:5500/admin/login', values);
+                  const res = await axios.post('http://localhost:3000/admin/login', values);
                   console.log(res.data.token);
                   
                   localStorage.setItem('token', res.data.token);
-                  navigate('/client');
+                  navigate('/admin');
                 } catch (err) {
                   console.error('Login failed:', err);
                 } finally {

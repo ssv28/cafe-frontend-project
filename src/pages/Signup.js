@@ -102,7 +102,7 @@ function Signup() {
                 setLoading(true);
                 try {
                   const res = await axios.post(
-                    'http://localhost:5500/admin/signup',
+                    'http://localhost:3000/admin/signup',
                     values
                   );
                   console.log("===>>>",res);
