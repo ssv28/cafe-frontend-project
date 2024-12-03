@@ -33,6 +33,7 @@ const signupSchema = Yup.object().shape({
 function Signup() {
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [data, setData] = useState([]);
   const navigate = useNavigate();
 
   const handleTogglePasswordVisibility = () => {
@@ -97,13 +98,16 @@ function Signup() {
               }}
               validationSchema={signupSchema}
               onSubmit={async (values, { resetForm }) => {
+                console.log(values);
+                
                 setLoading(true);
                 try {
                   const res = await axios.post(
                     'http://localhost:3000/admin/signup',
                     values
                   );
-                  console.log(res);
+                  console.log("===>>>",res);
+                  setData(res)
                   localStorage.setItem('token', res.data.token);
                   navigate('/admin/login');
                 } catch (err) {
