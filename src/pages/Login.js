@@ -35,11 +35,11 @@ function Login() {
     setShowPassword((prev) => !prev);
   };
 
-  useEffect (() => {
-    if(Token) {
-      navigate('/admin')
-    }
-  },[Token])
+  // useEffect (() => {
+  //   if(Token) {
+  //     navigate('/admin')
+  //   }
+  // },[Token])
 
   return (
     <>
@@ -103,7 +103,7 @@ function Login() {
                   console.log(res.data.token);
                   
                   localStorage.setItem('token', res.data.token);
-                  navigate('/admin');
+                  navigate('/client');
                 } catch (err) {
                   console.error('Login failed:', err);
                 } finally {

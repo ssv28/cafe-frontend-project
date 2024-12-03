@@ -33,7 +33,6 @@ const signupSchema = Yup.object().shape({
 function Signup() {
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const [data, setData] = useState([]);
   const navigate = useNavigate();
 
   const handleTogglePasswordVisibility = () => {
@@ -225,7 +224,6 @@ function Signup() {
                     <MenuItem value="" disabled>
                       Select Role
                     </MenuItem>
-                    <MenuItem value="superadmin">Super Admin</MenuItem>
                     <MenuItem value="admin">Admin</MenuItem>
                     <MenuItem value="manager">Manager</MenuItem>
                   </Field>
