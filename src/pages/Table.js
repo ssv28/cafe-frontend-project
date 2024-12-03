@@ -21,7 +21,7 @@ const Table = () => {
     axios
       .get('http://localhost:3000/table/find')
       .then((response) => setReservations(response.data))
-      .catch((error) => console.error('Error fetching reservations:', error));
+      .catch((error) => console.error('Error reservations:', error));
   }, []);
 
   const initialValues = {
