@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Formik, Field, Form, ErrorMessage } from 'formik';
 import {
@@ -26,6 +26,7 @@ const loginSchema = Yup.object().shape({
 });
 
 function Login() {
+  const Token = localStorage.getItem('Token')
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
@@ -33,6 +34,12 @@ function Login() {
   const handleTogglePasswordVisibility = () => {
     setShowPassword((prev) => !prev);
   };
+
+  useEffect (() => {
+    if(Token) {
+      navigate('/admin')
+    }
+  },[Token])
 
   return (
     <>
@@ -92,7 +99,7 @@ function Login() {
               onSubmit={async (values, { resetForm }) => {
                 setLoading(true);
                 try {
-                  const res = await axios.post('http://localhost:3000/admin/login', values);
+                  const res = await axios.post('http://localhost:5500/admin/login', values);
                   console.log(res.data.token);
                   
                   localStorage.setItem('token', res.data.token);
@@ -104,7 +111,11 @@ function Login() {
                   resetForm();
                 }
               }}
+
+              
+              
             >
+
               <Form>
                 <Box mb={2}>
                   <Field

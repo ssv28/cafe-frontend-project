@@ -103,11 +103,10 @@ function Signup() {
                 setLoading(true);
                 try {
                   const res = await axios.post(
-                    'http://localhost:3000/admin/signup',
+                    'http://localhost:5500/admin/signup',
                     values
                   );
                   console.log("===>>>",res);
-                  setData(res)
                   localStorage.setItem('token', res.data.token);
                   navigate('/admin/login');
                 } catch (err) {
